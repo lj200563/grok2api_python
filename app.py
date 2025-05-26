@@ -8,14 +8,10 @@ import inspect
 import secrets
 from loguru import logger
 from pathlib import Path
-from dotenv import load_dotenv
 import requests
 from flask import Flask, request, Response, jsonify, stream_with_context, render_template, redirect, session
 from curl_cffi import requests as curl_requests
 from werkzeug.middleware.proxy_fix import ProxyFix
-
-load_dotenv()
-
 class Logger:
     def __init__(self, level="INFO", colorize=True, format=None):
         logger.remove()
@@ -82,7 +78,7 @@ class Logger:
         self.logger.bind(**caller_info).info(f"请求: {request.method} {request.path}", "Request")
 
 logger = Logger(level="INFO")
-DATA_DIR = Path("./data")
+DATA_DIR = Path("/data")
 
 if not DATA_DIR.exists():
     DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -1220,7 +1216,7 @@ def chat_completions():
                 f"当前可用模型的全部可用数量: {json.dumps(token_manager.get_remaining_token_request_capacity(), indent=2)}","Server")
             
             if CONFIG['SERVER']['CF_CLEARANCE']:
-                CONFIG["SERVER"]['COOKIE'] = f"{CONFIG['API']['SIGNATURE_COOKIE']};{CONFIG['SERVER']['CF_CLEARANCE']};" 
+                CONFIG["SERVER"]['COOKIE'] = f"{CONFIG['API']['SIGNATURE_COOKIE']};{CONFIG['SERVER']['CF_CLEARANCE']}" 
             else:
                 CONFIG["SERVER"]['COOKIE'] = CONFIG['API']['SIGNATURE_COOKIE']
             logger.info(json.dumps(request_payload,indent=2),"Server")
